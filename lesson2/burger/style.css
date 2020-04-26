@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+}
+
+.burger {
+  margin: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  height: 150px;
+}
+
+.toppings-div {
+  margin: 16px;
+}
