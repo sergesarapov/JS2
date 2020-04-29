@@ -2,21 +2,50 @@ const API =
   "https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses";
 
 // Переделать в ДЗ
-let getRequest = (url, cb) => {
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      if (xhr.status !== 200) {
-        console.log("Error");
-      } else {
-        cb(xhr.responseText);
+// let getRequest = (url, cb) => {
+//   let xhr = new XMLHttpRequest();
+//   xhr.open("GET", url, true);
+//   xhr.onreadystatechange = () => {
+//     if (xhr.readyState === 4) {
+//       if (xhr.status !== 200) {
+//         console.log("Error");
+//       } else {
+//         cb(xhr.responseText);
+//       }
+//     }
+//   };
+//   xhr.send();
+// };
+//Та же функция через Promise
+let getRequest = (url) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status !== 200) {
+          reject("Error");
+        } else {
+          resolve(xhr.responseText);
+        }
       }
-    }
-  };
-  xhr.send();
+    };
+    xhr.send();
+  });
 };
 
+// getRequest(
+//   "https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/getBasket.json"
+// )
+//   .then((url) => {
+//     let a = JSON.parse(url);
+//     // console.log(url);
+//   })
+//   .catch((message) => {
+//     console.log(message);
+//   });
+
+//
 class ProductList {
   constructor(container = ".products") {
     this.container = container;
@@ -56,14 +85,15 @@ class ProductList {
       this.allProducts.push(productObject);
       block.insertAdjacentHTML("beforeend", productObject.render());
     }
+    initButtons();
   }
 }
 
 class ProductItem {
   constructor(product, img = "https://placehold.it/200x150") {
-    this.title = product.title;
+    this.title = product.product_name;
     this.price = product.price;
-    this.id = product.id;
+    this.id = product.id_product;
     this.img = img;
   }
 
@@ -78,64 +108,4 @@ class ProductItem {
             </div>`;
   }
 }
-new ProductList();
-//
-//
-//
-//Класс для корзины товаров
-class Cart {
-  constructor(cartItem) {
-    this.container = document.querySelector(".cart");
-    this.cartItems = [];
-    this.cartTotalPrice = 0;
-  }
-
-  checkIfAdded() {
-    // здесь можно сравнивать id объектов из cartItems
-    // и id нового объекта (cartItem)
-  }
-
-  addCartItem() {
-    if (this.checkIfAdded()) {
-      increaseAmount(); //тут нужно найти объект в массиве с тем же id
-    } else {
-      this.cartItems.push(cartItem);
-    }
-  }
-
-  removeCartItem() {
-    // здесь происходит удаление
-    // нужного объекта из массива this.cartItems
-  }
-
-  countCartTotalPrice() {
-    this.cartItems.forEach((item) => {
-      this.cartTotalPrice += item.price;
-    });
-  }
-
-  render() {
-    // здесь можно рендерить объекты из массива cartItems
-    // внутрь this.container
-  }
-}
-// Класс для элемента корзины,
-// аргументы для которого мы можем получить
-// с кнопки "Купить"
-class CartItem {
-  constructor(title, price, id, img, amount = 1) {
-    this.title = title;
-    this.price = price;
-    this.id = id;
-    this.img = img;
-    this.amount = amount;
-  }
-
-  increaseAmount() {
-    this.amount++;
-  }
-
-  reduceAmount() {
-    this.amount--;
-  }
-}
+const catalog = new ProductList();
